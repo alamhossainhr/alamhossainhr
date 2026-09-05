@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-7">
+        <div class="badge-executive mb-3">
+          <i class="bi bi-patch-check-fill"></i> HR, Payroll & Software Engineering
+        </div>
+        <h1 class="display-4 fw-extrabold mb-3">
+          {{ site_settings.hero_headline }}
+        </h1>
+        <p class="lead text-muted mb-4">
+          {{ site_settings.hero_subheadline }}
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary-custom">
+            <i class="bi bi-grid-fill me-2"></i>View My Work
+          </a>
+          <a href="{% url 'portfolio:resume_download' %}" class="btn btn-outline-custom">
+            <i class="bi bi-file-earmark-pdf-fill me-2"></i>Download CV
+          </a>
+          <a href="{% url 'contact:contact' %}" class="btn btn-outline-custom">
+            Contact Me
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center">
+        <div class="position-relative d-inline-block">
+          {% if site_settings.profile_image %}
+            <img src="{{ site_settings.profile_image.url }}" alt="{{ site_settings.site_name }}" class="img-fluid rounded-4 shadow-lg border border-4 border-white" style="max-height: 440px; object-fit: cover;">
+          {% else %}
+            <div class="bg-secondary rounded-4 shadow d-flex align-items-center justify-content-center text-white" style="width: 320px; height: 380px;">
+              <i class="bi bi-person-fill display-1"></i>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Executive Statistics -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="counter-value counter" data-target="{{ site_settings.years_experience }}">0</div>
+          <p class="text-muted fw-semibold mb-0">Years of Experience</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="counter-value counter" data-target="{{ site_settings.projects_completed }}">0</div>
+          <p class="text-muted fw-semibold mb-0">Projects Completed</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="counter-value counter" data-target="{{ site_settings.reports_dashboards_developed }}">0</div>
+          <p class="text-muted fw-semibold mb-0">SQL Reports & Dashboards</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card text-center">
+          <div class="counter-value counter" data-target="{{ site_settings.hr_processes_automated }}">0</div>
+          <p class="text-muted fw-semibold mb-0">HR Processes Automated</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Strategic Advantage Section -->
+<section class="py-5 bg-surface">
+  <div class="container">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <h2 class="fw-bold">What Makes Me Different</h2>
+      <p class="text-muted">The critical intersection of business domain mastery and software engineering.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-executive p-4">
+          <i class="bi bi-people-fill fs-1 text-primary mb-3"></i>
+          <h4 class="fw-bold mb-2">HR Domain Depth</h4>
+          <p class="text-muted">Practical understanding of Bangladesh Labor Law, complex payroll structures, attendance, shift scheduling, final settlement, compliance, and industrial relations.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-executive p-4">
+          <i class="bi bi-database-fill-gear fs-1 text-info mb-3"></i>
+          <h4 class="fw-bold mb-2">Data & Analytics</h4>
+          <p class="text-muted">Writing complex Microsoft SQL Server & MySQL queries, stored procedures, Excel automation, and Power BI dashboards to transform raw logs into actionable intelligence.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-executive p-4">
+          <i class="bi bi-code-slash fs-1 text-success mb-3"></i>
+          <h4 class="fw-bold mb-2">Full-Stack Tech</h4>
+          <p class="text-muted">Engineering secure, scalable web systems using Python, Django, REST APIs, and database architecture to eliminate manual tasks and accelerate operations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Projects -->
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">Featured Systems & Solutions</h2>
+        <p class="text-muted mb-0">Production-ready applications solving enterprise HR and payroll bottlenecks.</p>
+      </div>
+      <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-custom d-none d-md-inline-block">View All Projects</a>
+    </div>
+    <div class="row g-4">
+      {% for project in featured_projects %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-executive overflow-hidden">
+            {% if project.thumbnail %}
+              <img src="{{ project.thumbnail.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 220px; object-fit: cover;">
+            {% endif %}
+            <div class="p-4 d-flex flex-column justify-content-between" style="min-height: 240px;">
+              <div>
+                <span class="badge bg-primary-subtle text-primary mb-2">{{ project.category.name }}</span>
+                <h5 class="fw-bold mb-2">{{ project.title }}</h5>
+                <p class="text-muted small">{{ project.summary|truncatewords:20 }}</p>
+              </div>
+              <div class="pt-3 border-top border-default d-flex justify-content-between align-items-center">
+                <a href="{{ project.get_absolute_url }}" class="btn btn-sm btn-outline-custom">View Case Study</a>
+                {% if project.live_demo_url %}
+                  <a href="{{ project.live_demo_url }}" target="_blank" class="text-muted small"><i class="bi bi-box-arrow-up-right"></i> Live Demo</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Strategic CTA -->
+<section class="py-5 bg-surface border-top border-bottom border-default">
+  <div class="container text-center py-4">
+    <h2 class="fw-bold mb-3">Need an HR, Payroll, or Data Solution?</h2>
+    <p class="lead text-muted max-w-700 mx-auto mb-4">
+      Let's discuss how data intelligence, automated pipelines, and custom Django applications can modernize your workforce operations.
+    </p>
+    <a href="{% url 'contact:contact' %}" class="btn btn-primary-custom px-5 py-3">Let's Work Together</a>
+  </div>
+</section>
+{% endblock %}

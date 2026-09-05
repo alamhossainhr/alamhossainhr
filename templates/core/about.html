@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}About Me | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row gy-5 align-items-center mb-5">
+    <div class="col-lg-5 text-center">
+      {% if site_settings.profile_image %}
+        <img src="{{ site_settings.profile_image.url }}" alt="{{ site_settings.site_name }}" class="img-fluid rounded-4 shadow-lg border border-default" style="max-height: 480px; width: 100%; object-fit: cover;">
+      {% else %}
+        <div class="bg-secondary rounded-4 shadow d-flex align-items-center justify-content-center text-white" style="height: 400px;">
+          <i class="bi bi-person-circle display-1"></i>
+        </div>
+      {% endif %}
+    </div>
+    <div class="col-lg-7">
+      <div class="badge-executive mb-3"><i class="bi bi-person-lines-fill"></i> Strategic Profile</div>
+      <h1 class="fw-bold display-5 mb-3">Connecting People, Process & Technical Architecture</h1>
+      <p class="lead text-muted mb-4">{{ site_settings.about_intro }}</p>
+      <div class="p-4 bg-surface rounded-4 border-start border-4 border-primary shadow-sm mb-4">
+        <p class="fw-semibold text-main mb-0">
+          "I don't just process HR data — I design systems that make HR operations more accurate, measurable, and scalable."
+        </p>
+      </div>
+      <div class="d-flex flex-wrap gap-3">
+        <a href="{% url 'portfolio:resume_download' %}" class="btn btn-primary-custom">
+          <i class="bi bi-download me-2"></i>Download Updated CV
+        </a>
+        <a href="{% url 'contact:contact' %}" class="btn btn-outline-custom">Initiate Discussion</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 my-5">
+    <div class="col-12"><h3 class="fw-bold mb-4">Milestones & Career Impact</h3></div>
+    {% for ach in achievements %}
+      <div class="col-md-4 col-sm-6">
+        <div class="card-executive p-4 h-100">
+          <span class="badge bg-primary-subtle text-primary mb-2">{{ ach.category }}</span>
+          <h2 class="fw-extrabold text-primary mb-1">{{ ach.metric_value }}</h2>
+          <h6 class="fw-bold mb-2">{{ ach.title }}</h6>
+          <p class="text-muted small mb-0">{{ ach.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

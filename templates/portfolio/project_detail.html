@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}{{ project.title }} | Case Study | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'core:index' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'portfolio:project_list' %}">Projects</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-5">
+    <div class="col-lg-8">
+      <h1 class="fw-bold display-5 mb-3">{{ project.title }}</h1>
+      <p class="lead text-muted mb-4">{{ project.summary }}</p>
+      
+      {% if project.thumbnail %}
+        <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="img-fluid rounded-4 mb-5 border border-default shadow-sm w-100">
+      {% endif %}
+
+      <div class="mb-5">
+        <h3 class="fw-bold text-primary mb-3"><i class="bi bi-exclamation-octagon-fill me-2"></i>1. The Business Challenge</h3>
+        <p class="text-muted">{{ project.business_challenge|linebreaks }}</p>
+      </div>
+
+      <div class="mb-5">
+        <h3 class="fw-bold text-info mb-3"><i class="bi bi-cpu-fill me-2"></i>2. The Engineered Solution</h3>
+        <p class="text-muted">{{ project.engineered_solution|linebreaks }}</p>
+      </div>
+
+      <div class="mb-5">
+        <h3 class="fw-bold text-dark mb-3"><i class="bi bi-list-check me-2"></i>3. Key Features & Implementation</h3>
+        <div class="text-muted">{{ project.key_features|linebreaks }}</div>
+      </div>
+
+      <div class="mb-5">
+        <h3 class="fw-bold text-success mb-3"><i class="bi bi-graph-up-arrow me-2"></i>4. Measurable Business Impact</h3>
+        <div class="p-4 bg-surface rounded-4 border-start border-4 border-success shadow-sm">
+          <p class="text-muted mb-0">{{ project.business_impact|linebreaks }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card-executive p-4 sticky-top" style="top: 100px;">
+        <h5 class="fw-bold mb-4 border-bottom border-default pb-2">Project Metadata</h5>
+        <div class="mb-3">
+          <span class="text-muted small d-block">Role</span>
+          <strong class="text-main">{{ project.role }}</strong>
+        </div>
+        <div class="mb-3">
+          <span class="text-muted small d-block">Timeline</span>
+          <strong class="text-main">{{ project.duration }}</strong>
+        </div>
+        <div class="mb-3">
+          <span class="text-muted small d-block">Technologies</span>
+          <div class="d-flex flex-wrap gap-1 mt-1">
+            {% for tech in project.technologies.all %}
+              <span class="badge bg-secondary-subtle text-secondary">{{ tech.name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="d-grid gap-2">
+          {% if project.live_demo_url %}
+            <a href="{{ project.live_demo_url }}" target="_blank" class="btn btn-primary-custom">
+              <i class="bi bi-globe me-2"></i>Live System Demo
+            </a>
+          {% endif %}
+          {% if project.github_url %}
+            <a href="{{ project.github_url }}" target="_blank" class="btn btn-outline-custom">
+              <i class="bi bi-github me-2"></i>Source Code Repository
+            </a>
+          {% endif %}
+          <a href="{% url 'contact:contact' %}?service={{ project.title }}" class="btn btn-outline-custom">
+            Inquire About Similar Build
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

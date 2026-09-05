@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Featured Projects & Case Studies | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center max-w-700 mx-auto mb-5">
+    <div class="badge-executive mb-3"><i class="bi bi-kanban"></i> Engineering & Analytics</div>
+    <h1 class="fw-bold display-5 mb-3">Enterprise Systems & Technical Solutions</h1>
+    <p class="text-muted">Explore web-based HR platforms, automated payroll scripts, and SQL analytics dashboards.</p>
+    
+    <!-- Category Filter Controls -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+      <a href="{% url 'portfolio:project_list' %}" class="btn {% if not selected_category %}btn-primary-custom{% else %}btn-outline-custom{% endif %} btn-sm">All Systems</a>
+      {% for cat in categories %}
+        <a href="{% url 'portfolio:project_list' %}?category={{ cat.slug }}" class="btn {% if selected_category == cat.slug %}btn-primary-custom{% else %}btn-outline-custom{% endif %} btn-sm">
+          {{ cat.name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {% for project in projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card-executive overflow-hidden h-100 d-flex flex-column">
+          {% if project.thumbnail %}
+            <img src="{{ project.thumbnail.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 220px; object-fit: cover;">
+          {% endif %}
+          <div class="p-4 d-flex flex-column justify-content-between flex-grow-1">
+            <div>
+              <span class="badge bg-primary-subtle text-primary mb-2">{{ project.category.name }}</span>
+              <h4 class="fw-bold mb-2">{{ project.title }}</h4>
+              <p class="text-muted small mb-3">{{ project.summary|truncatewords:25 }}</p>
+              
+              <div class="d-flex flex-wrap gap-1 mb-4">
+                {% for tech in project.technologies.all|slice:":4" %}
+                  <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.75rem;">{{ tech.name }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            
+            <div class="pt-3 border-top border-default d-flex justify-content-between align-items-center">
+              <a href="{{ project.get_absolute_url }}" class="btn btn-sm btn-primary-custom">Read Case Study</a>
+              <div class="d-flex gap-2">
+                {% if project.live_demo_url %}
+                  <a href="{{ project.live_demo_url }}" target="_blank" class="text-muted" title="Live Preview"><i class="bi bi-box-arrow-up-right"></i></a>
+                {% endif %}
+                {% if project.github_url %}
+                  <a href="{{ project.github_url }}" target="_blank" class="text-muted" title="Source Code"><i class="bi bi-github"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No projects found in this domain.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Case Studies | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center max-w-700 mx-auto mb-5">
+    <div class="badge-executive mb-3"><i class="bi bi-lightbulb-fill"></i> Operational Impact</div>
+    <h1 class="fw-bold display-5 mb-3">HR & Data Case Studies</h1>
+    <p class="text-muted">Detailed technical interventions addressing bottlenecks in workforce compliance, reporting, and automated calculations.</p>
+  </div>
+
+  <div class="row g-4">
+    {% for cs in case_studies %}
+      <div class="col-lg-6">
+        <div class="card-executive p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <span class="badge bg-primary-subtle text-primary mb-2">{{ cs.domain_tag }}</span>
+            <h3 class="fw-bold mb-3">{{ cs.title }}</h3>
+            
+            <div class="mb-3">
+              <strong class="text-danger small text-uppercase"><i class="bi bi-dash-circle me-1"></i> Problem:</strong>
+              <p class="text-muted small mt-1">{{ cs.problem }}</p>
+            </div>
+            <div class="mb-3">
+              <strong class="text-info small text-uppercase"><i class="bi bi-gear-fill me-1"></i> Solution:</strong>
+              <p class="text-muted small mt-1">{{ cs.solution }}</p>
+            </div>
+            <div>
+              <strong class="text-success small text-uppercase"><i class="bi bi-check-circle-fill me-1"></i> Business Result:</strong>
+              <p class="text-muted small mt-1">{{ cs.results }}</p>
+            </div>
+          </div>
+          
+          <div class="pt-3 border-top border-default mt-3">
+            <small class="text-muted">Tools: </small>
+            <small class="text-secondary fw-semibold">{{ cs.tools_used }}</small>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

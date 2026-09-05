@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.title }} | Template Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-7">
+      {% if product.preview_image %}
+        <img src="{{ product.preview_image.url }}" alt="{{ product.title }}" class="img-fluid rounded-4 mb-4 border border-default shadow-sm w-100">
+      {% endif %}
+      <h2 class="fw-bold mb-3">Description & Specifications</h2>
+      <div class="text-muted lead" style="line-height: 1.8; font-size: 1.05rem;">
+        {{ product.full_description|linebreaks }}
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card-executive p-4 sticky-top" style="top: 100px;">
+        <span class="badge bg-primary-subtle text-primary mb-2">{{ product.category.name }}</span>
+        <h3 class="fw-bold mb-3">{{ product.title }}</h3>
+        
+        <div class="d-flex align-items-baseline gap-2 mb-4">
+          {% if product.is_free %}
+            <h2 class="fw-extrabold text-success mb-0">Free</h2>
+          {% else %}
+            <h2 class="fw-extrabold text-main mb-0">{{ product.currency }} {{ product.price }}</h2>
+          {% endif %}
+          <small class="text-muted">&bull; One-time download</small>
+        </div>
+
+        <ul class="list-unstyled d-flex flex-column gap-2 text-muted small mb-4">
+          <li><i class="bi bi-file-earmark-check text-primary me-2"></i>Format: <strong>{{ product.get_format_type_display }}</strong></li>
+          <li><i class="bi bi-shield-lock-check text-primary me-2"></i>Direct Secure Link (Active 48 hrs)</li>
+          <li><i class="bi bi-download text-primary me-2"></i>Delivered: {{ product.downloads_count }} times</li>
+        </ul>
+
+        <div class="d-grid gap-2">
+          <a href="{% url 'portfolio:checkout' product.slug %}" class="btn btn-primary-custom py-3 fs-6">
+            {% if product.is_free %}Instant Free Download{% else %}Proceed to Download / Purchase{% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

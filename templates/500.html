@@ -1,0 +1,11 @@
+<!-- templates/500.html -->
+{% extends 'base.html' %}
+{% block title %}500 - Internal Server Error{% endblock %}
+{% block content %}
+<div class="container py-5 text-center my-5">
+  <h1 class="display-1 fw-extrabold text-danger">500</h1>
+  <h2 class="fw-bold mb-3">Internal System Exception</h2>
+  <p class="text-muted mb-4">An unexpected issue occurred while processing the request. The diagnostic log has been registered.</p>
+  <a href="{% url 'core:index' %}" class="btn btn-primary-custom">Return to Homepage</a>
+</div>
+{% endblock %}

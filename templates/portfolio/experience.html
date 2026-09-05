@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Professional Timeline | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-7">
+      <h2 class="fw-bold mb-4"><i class="bi bi-briefcase-fill text-primary me-2"></i>Corporate Experience</h2>
+      <div class="timeline-vertical">
+        {% for exp in experiences %}
+          <div class="timeline-item">
+            <div class="card-executive p-4">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0 text-main">{{ exp.position }}</h5>
+                {% if exp.is_current %}
+                  <span class="badge bg-success-subtle text-success">Current Role</span>
+                {% endif %}
+              </div>
+              <p class="text-primary fw-semibold mb-1">{{ exp.company }} &bull; <span class="text-muted">{{ exp.location }}</span></p>
+              <p class="small text-muted mb-3">{{ exp.start_date|date:"M Y" }} &mdash; {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
+              
+              <div class="text-muted small mb-3">
+                {{ exp.responsibilities|linebreaks }}
+              </div>
+
+              {% if exp.technologies_used %}
+                <div class="border-top border-default pt-2 mt-2">
+                  <small class="text-muted fw-semibold">Tools & Technologies: </small>
+                  <small class="text-secondary">{{ exp.technologies_used }}</small>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <h2 class="fw-bold mb-4"><i class="bi bi-mortarboard-fill text-info me-2"></i>Education</h2>
+      <div class="timeline-vertical">
+        {% for edu in education %}
+          <div class="timeline-item">
+            <div class="card-executive p-4">
+              <h5 class="fw-bold mb-1 text-main">{{ edu.degree }}</h5>
+              <p class="text-info fw-semibold mb-1">{{ edu.institution }}</p>
+              <p class="small text-muted mb-2">Major: {{ edu.major }} ({{ edu.start_year }} &mdash; {{ edu.completion_year|default:"Present" }})</p>
+              {% if edu.result %}<span class="badge bg-secondary-subtle text-secondary mb-2">Result: {{ edu.result }}</span>{% endif %}
+              {% if edu.description %}<p class="text-muted small mb-0">{{ edu.description }}</p>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

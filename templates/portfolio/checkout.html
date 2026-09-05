@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Acquire Template | {{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card-executive p-4 p-md-5">
+        <h3 class="fw-bold mb-2">Checkout / Access Request</h3>
+        <p class="text-muted mb-4">Fill in your information to receive your verified download link.</p>
+
+        <div class="p-3 bg-surface rounded-3 border border-default mb-4 d-flex justify-content-between align-items-center">
+          <div>
+            <strong class="text-main d-block">{{ product.title }}</strong>
+            <small class="text-muted">{{ product.get_format_type_display }}</small>
+          </div>
+          <span class="fs-5 fw-bold text-primary">
+            {% if product.is_free %}FREE{% else %}{{ product.currency }} {{ product.price }}{% endif %}
+          </span>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Your Name *</label>
+              <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Email Address (for download link) *</label>
+              <input type="email" name="email" class="form-control" placeholder="name@company.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Mobile Number *</label>
+              <input type="text" name="phone" class="form-control" placeholder="+880 1XXXXXXXXX" required>
+            </div>
+            
+            {% if not product.is_free %}
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Payment Method</label>
+                <select name="payment_method" class="form-control">
+                  <option value="bKash_Personal">bKash (Send Money / Merchant)</option>
+                  <option value="Nagad">Nagad</option>
+                  <option value="Direct_Bank">Direct Bank Transfer</option>
+                </select>
+              </div>
+              <div class="col-12 mt-3">
+                <div class="p-3 bg-surface border border-default rounded-3 small">
+                  <strong class="text-main d-block mb-1">Manual Payment Instructions:</strong>
+                  Send <strong>{{ product.currency }} {{ product.price }}</strong> to <code>{{ site_settings.phone }}</code> via bKash/Nagad, then enter your Transaction ID below.
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Transaction ID (TrxID) *</label>
+                <input type="text" name="transaction_id" class="form-control" placeholder="e.g. 9J82KL789" required>
+              </div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary-custom w-100 py-3">
+            {% if product.is_free %}Get Download Link{% else %}Submit & Verify Payment{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

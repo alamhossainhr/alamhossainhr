@@ -1,0 +1,100 @@
+<header class="sticky-top navbar-wrapper py-3">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-glass px-3 py-2">
+      <!-- Brand Identity -->
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="{% url 'core:index' %}">
+        <div class="brand-avatar">
+          <span>AH</span>
+        </div>
+        <div class="d-flex flex-column leading-tight">
+          <span class="brand-title">{{ site_settings.site_name }}</span>
+          <span class="brand-subtitle d-none d-sm-inline-block">HRIS & Full-Stack Engineer</span>
+        </div>
+      </a>
+
+      <!-- Mobile Action Controls -->
+      <div class="d-flex align-items-center gap-2 d-lg-none">
+        <button id="theme-toggle-mobile" class="btn-theme-pill" aria-label="Toggle Mode">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+        <button class="btn-menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#executiveMenu" aria-controls="executiveMenu" aria-label="Open Navigation">
+          <i class="bi bi-list fs-4"></i>
+        </button>
+      </div>
+
+      <!-- Desktop Floating Navigation -->
+      <div class="collapse navbar-collapse d-none d-lg-flex justify-content-end" id="desktopNav">
+        <ul class="navbar-nav nav-pill-group align-items-center gap-1 mx-auto">
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'core:index' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'core:about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'experience' %}active{% endif %}" href="{% url 'portfolio:experience' %}">Experience</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'skills' %}active{% endif %}" href="{% url 'portfolio:skills' %}">Skills</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if 'projects' in request.path %}active{% endif %}" href="{% url 'portfolio:project_list' %}">Projects</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if 'case-studies' in request.path %}active{% endif %}" href="{% url 'portfolio:case_study_list' %}">Case Studies</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'portfolio:services' %}">Services</a></li>
+          <li class="nav-item">
+            <a class="nav-link-pill nav-link-store {% if 'store' in request.path %}active{% endif %}" href="{% url 'portfolio:store_list' %}">
+              <i class="bi bi-bag-check-fill me-1"></i>Store
+            </a>
+          </li>
+          <li class="nav-item"><a class="nav-link-pill {% if 'blog' in request.path %}active{% endif %}" href="{% url 'blog:post_list' %}">Blog</a></li>
+          <li class="nav-item"><a class="nav-link-pill {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact:contact' %}">Contact</a></li>
+        </ul>
+
+        <!-- Right Side Action Group -->
+        <div class="d-flex align-items-center gap-2">
+          <a href="{% url 'portfolio:resume_download' %}" class="btn-cv-glow">
+            <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> CV
+          </a>
+          <button id="theme-toggle" class="btn-theme-pill" aria-label="Toggle Mode">
+            <i class="bi bi-moon-stars-fill"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile Slide-out Drawer -->
+<div class="offcanvas offcanvas-end custom-drawer" tabindex="-1" id="executiveMenu" aria-labelledby="executiveMenuLabel">
+  <div class="offcanvas-header p-4 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+      <div class="brand-avatar"><span>AH</span></div>
+      <div>
+        <h6 class="fw-bold mb-0 text-main" id="executiveMenuLabel">{{ site_settings.site_name }}</h6>
+        <small class="text-muted" style="font-size: 0.75rem;">HR, Payroll & Software Specialist</small>
+      </div>
+    </div>
+    <button type="button" class="btn-close-custom" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="offcanvas-body p-4 d-flex flex-column justify-content-between">
+    <ul class="nav flex-column gap-2 mb-4">
+      <li class="nav-item"><a class="drawer-link" href="{% url 'core:index' %}"><i class="bi bi-house-door-fill"></i><span>Home</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'core:about' %}"><i class="bi bi-person-badge-fill"></i><span>About Me</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:experience' %}"><i class="bi bi-briefcase-fill"></i><span>Experience</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:skills' %}"><i class="bi bi-cpu-fill"></i><span>Skills Matrix</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:project_list' %}"><i class="bi bi-grid-fill"></i><span>Featured Projects</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:case_study_list' %}"><i class="bi bi-journal-text"></i><span>Case Studies</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:services' %}"><i class="bi bi-layers-fill"></i><span>Services</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'portfolio:store_list' %}" style="background: rgba(0, 173, 181, 0.1);"><i class="bi bi-bag-check-fill text-info"></i><span class="fw-bold">Store & Toolkits</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'blog:post_list' %}"><i class="bi bi-feather"></i><span>Blog & Insights</span></a></li>
+      <li class="nav-item"><a class="drawer-link" href="{% url 'contact:contact' %}"><i class="bi bi-chat-left-text-fill"></i><span>Contact</span></a></li>
+    </ul>
+
+    <div class="pt-3 border-top">
+      <a href="{% url 'portfolio:resume_download' %}" class="btn btn-primary-custom w-100 py-3 mb-3 d-flex align-items-center justify-content-center gap-2">
+        <i class="bi bi-download"></i> Download Resume
+      </a>
+      <div class="d-flex justify-content-center gap-3">
+        {% for social in social_links %}
+          <a href="{{ social.url }}" target="_blank" class="drawer-social-btn" aria-label="{{ social.platform }}">
+            <i class="{{ social.icon_class }}"></i>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

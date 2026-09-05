@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Blog & Knowledge Base | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-8">
+      <h1 class="fw-bold mb-4">Insights & Technical Writing</h1>
+
+      <form method="get" class="mb-4 d-flex gap-2">
+        <input type="text" name="q" value="{{ search_query|default:'' }}" class="form-control" placeholder="Search HR, SQL, Python topics...">
+        <button type="submit" class="btn btn-primary-custom">Search</button>
+      </form>
+
+      <div class="row g-4">
+        {% for post in page_obj %}
+          <div class="col-md-6">
+            <div class="card-executive overflow-hidden h-100 d-flex flex-column">
+              {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 190px; object-fit: cover;">
+              {% endif %}
+              <div class="p-4 d-flex flex-column justify-content-between flex-grow-1">
+                <div>
+                  <span class="badge bg-primary-subtle text-primary mb-2">{{ post.category.name }}</span>
+                  <h5 class="fw-bold mb-2"><a href="{{ post.get_absolute_url }}" class="text-main text-decoration-none">{{ post.title }}</a></h5>
+                  <p class="text-muted small mb-3">{{ post.short_description|truncatewords:20 }}</p>
+                </div>
+                <div class="border-top border-default pt-3 d-flex justify-content-between text-muted small">
+                  <span><i class="bi bi-clock me-1"></i>{{ post.reading_time }} min read</span>
+                  <span>{{ post.created_at|date:"M d, Y" }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 py-5 text-center text-muted">No published articles matched your search.</div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+        <nav class="mt-5">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="card-executive p-4 mb-4">
+        <h5 class="fw-bold mb-3 border-bottom border-default pb-2">Categories</h5>
+        <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+          {% for cat in categories %}
+            <li><a href="{% url 'blog:post_list_category' cat.slug %}" class="text-muted text-decoration-none d-flex justify-content-between"><span>{{ cat.name }}</span><span class="badge bg-secondary-subtle text-secondary">{{ cat.posts.count }}</span></a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card-executive p-4">
+        <h5 class="fw-bold mb-3 border-bottom border-default pb-2">Recent Insights</h5>
+        <div class="d-flex flex-column gap-3">
+          {% for r in recent_posts %}
+            <div>
+              <a href="{{ r.get_absolute_url }}" class="text-main fw-semibold small text-decoration-none d-block">{{ r.title }}</a>
+              <small class="text-muted">{{ r.created_at|date:"M d, Y" }}</small>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
