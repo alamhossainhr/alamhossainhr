@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 env = environ.Env(
     DEBUG=(bool, False),
-    ALLOWED_HOSTS=['*'] (list, ['127.0.0.1', 'localhost'])
+    ALLOWED_HOSTS = ['*', '.vercel.app', '127.0.0.1', 'localhost']
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
