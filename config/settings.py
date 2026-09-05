@@ -11,13 +11,13 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 env = environ.Env(
     DEBUG=(bool, False),
-    ALLOWED_HOSTS = ['*', '.vercel.app', '127.0.0.1', 'localhost']
+    AALLOWED_HOSTS = ['*', '.vercel.app', '127.0.0.1', 'localhost']
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-production-temp-key-secret-2026')
 DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*', '.vercel.app', '127.0.0.1', 'localhost'])
 
 INSTALLED_APPS = [
     'jazzmin',
