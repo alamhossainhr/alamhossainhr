@@ -9,14 +9,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Add apps folder to sys.path
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    AALLOWED_HOSTS = ['*', '.vercel.app', '127.0.0.1', 'localhost']
-)
+# Initialize environment variables
+env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-production-temp-key-secret-2026')
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG', default=False)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*', '.vercel.app', '127.0.0.1', 'localhost'])
 
 INSTALLED_APPS = [
@@ -68,13 +66,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# Database Configuration with SQLite Fallback
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 # ========================================================
 # Jazzmin Executive Admin Dashboard Settings
 # ========================================================
@@ -87,37 +96,29 @@ JAZZMIN_SETTINGS = {
     "search_model": ["portfolio.Project", "blog.BlogPost", "contact.ContactMessage"],
     "user_avatar": None,
 
-    # Top Menu Links
     "topmenu_links": [
         {"name": "Home View", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "Live Portfolio", "url": "/", "new_window": True},
         {"name": "Store Front", "url": "/store/", "new_window": True},
     ],
 
-    # User Menu
     "usermenu_links": [
         {"name": "View Site", "url": "/", "new_window": True, "icon": "fas fa-globe"},
     ],
 
-    # Navigation Layout & Icons
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
     "order_with_respect_to": ["core", "portfolio", "blog", "contact", "auth"],
 
-    # FontAwesome Icons for Dashboard Models
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        
-        # Core App
         "core.SiteSetting": "fas fa-sliders-h",
         "core.SocialLink": "fas fa-share-alt",
         "core.PageView": "fas fa-chart-line",
-
-        # Portfolio App
         "portfolio.SkillCategory": "fas fa-layer-group",
         "portfolio.Skill": "fas fa-tools",
         "portfolio.Technology": "fas fa-code",
@@ -134,17 +135,12 @@ JAZZMIN_SETTINGS = {
         "portfolio.StoreCategory": "fas fa-tags",
         "portfolio.DigitalProduct": "fas fa-box-open",
         "portfolio.ProductOrder": "fas fa-shopping-cart",
-
-        # Blog App
         "blog.BlogCategory": "fas fa-bookmark",
         "blog.BlogPost": "fas fa-newspaper",
-
-        # Contact App
         "contact.ContactMessage": "fas fa-envelope-open-text",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
-
     "related_modal_active": True,
     "custom_css": None,
     "custom_js": None,
@@ -196,12 +192,13 @@ TIME_ZONE = 'Asia/Dhaka'
 USE_I18N = True
 USE_TZ = True
 
-
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Static Files Configuration
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Safe WhiteNoise storage that will not crash on missing manifest entries in Vercel
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -211,13 +208,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Email Settings
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = env('EMAIL_PORT', default=587)
-EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
-# Security Headers for Production
+# Production Security Headers
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
