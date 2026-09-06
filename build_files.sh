@@ -14,4 +14,4 @@ python manage.py collectstatic --noinput --clear
 # Ensure staticfiles directory exists so Vercel build does not fail
 mkdir -p staticfiles
 
-echo "Build process completed successfully!"
+echo "Build process completed!"
