@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
-echo "Building project packages..."
-python3 -m pip install -r requirements.txt --break-system-packages
+echo "Building the project..."
+python3 -m pip install -r requirements.txt --no-cache-dir
 
-echo "Collecting static assets..."
+echo "Collect Static..."
 python3 manage.py collectstatic --noinput --clear
+
+echo "Build process completed!"
