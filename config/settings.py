@@ -4,6 +4,7 @@ from pathlib import Path
 import dj_database_url
 import environ
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Add apps folder to sys.path
@@ -66,24 +67,73 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database Configuration with SQLite Fallback
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
+# Add 'storages' to INSTALLED_APPS if not already present
+if 'storages' not in INSTALLED_APPS:
+    INSTALLED_APPS.append('storages')
+
+# AWS S3 / Neon Storage Configuration
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default=None)
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default=None)
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default=None)
+AWS_S3_ENDPOINT_URL = env('AWS_ENDPOINT_URL_S3', default=None)
+AWS_S3_REGION_NAME = env('AWS_REGION', default='us-east-2')
+
+if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_STORAGE_BUCKET_NAME:
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False
+
+    # Media files served directly from Neon Object Storage
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "location": "media",
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
+else:
+    # Local development fallback
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        },
+    }
+
+
+# 1. Grab the DATABASE_URL from Vercel/local environment
+db_url = os.getenv('DATABASE_URL')
+if not db_url and 'DATABASE_URL' in globals().get('env', {}):
+    db_url = env('DATABASE_URL')
+
+if db_url:
+    db_url = str(db_url).strip(" '\"")
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
+        'default': dj_database_url.parse(
+            db_url,
             conn_max_age=600,
             ssl_require=True
         )
     }
 else:
+    # 2. Serverless-safe SQLite fallback (Vercel container root is read-only; /tmp is writable)
+    db_path = '/tmp/db.sqlite3' if os.getenv('VERCEL') else BASE_DIR / 'db.sqlite3'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': db_path,
         }
     }
-
 # ========================================================
 # Jazzmin Executive Admin Dashboard Settings
 # ========================================================
@@ -192,12 +242,10 @@ TIME_ZONE = 'Asia/Dhaka'
 USE_I18N = True
 USE_TZ = True
 
-# Static Files Configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Safe WhiteNoise storage that will not crash on missing manifest entries in Vercel
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'

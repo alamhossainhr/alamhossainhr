@@ -1,7 +1,7 @@
-from .models import SiteSetting, SocialLink
+from .models import SiteSetting
 
 def site_settings(request):
-    return {
-        'site_settings': SiteSetting.load(),
-        'social_links': SocialLink.objects.all(),
-    }
+    try:
+        return {'site_settings': SiteSetting.load()}
+    except Exception:
+        return {'site_settings': None}
