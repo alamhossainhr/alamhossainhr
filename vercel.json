@@ -4,7 +4,9 @@
     {
       "src": "config/wsgi.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "250mb" }
+      "config": {
+        "excludeFiles": "{staticfiles/**,media/**,.venv/**,venv/**,personalportfolio.sql}"
+      }
     },
     {
       "src": "build_files.sh",
