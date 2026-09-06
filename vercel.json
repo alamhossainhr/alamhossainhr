@@ -1,12 +1,15 @@
 {
   "version": 2,
+  "functions": {
+    "config/wsgi.py": {
+      "includeFiles": "templates/**",
+      "excludeFiles": "{staticfiles/**,static/**,media/**,*.sql,venv/**,.venv/**}"
+    }
+  },
   "builds": [
     {
       "src": "config/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "excludeFiles": "{staticfiles/**,media/**,.venv/**,venv/**,personalportfolio.sql}"
-      }
+      "use": "@vercel/python"
     },
     {
       "src": "build_files.sh",
