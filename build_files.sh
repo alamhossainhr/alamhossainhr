@@ -1,9 +1,17 @@
 #!/bin/bash
 
-echo "Installing dependencies with uv..."
-uv pip install -r requirements.txt --system
+echo "Creating virtual environment..."
+python3 -m venv .build_venv
+source .build_venv/bin/activate
 
-echo "Collect Static..."
-python3 manage.py collectstatic --noinput --clear
+echo "Installing dependencies..."
+pip install --upgrade pip
+pip install -r requirements.txt
 
-echo "Build process completed!"
+echo "Collecting static files..."
+python manage.py collectstatic --noinput --clear
+
+# Ensure staticfiles directory exists so Vercel build does not fail
+mkdir -p staticfiles
+
+echo "Build process completed successfully!"
